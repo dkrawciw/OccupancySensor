@@ -14,17 +14,22 @@ def logDevices(request):
         try:
             # Successfully recieving information from the 
             deviceData = json.loads(request.body)
-            
-            newDev = Devices(
-                            deviceName = deviceData['name'],
-                            deviceId = deviceData["address"],
-                            deviceManufacturer = deviceData["manufacturer"],
-                            serviceUUID = deviceData["serviceUUID"],
-                            txPower = deviceData["txPower"],
-                            rssi = deviceData["rssi"]
-                            )
+
+            # Formatting the given JSON and putting it into the database
+            newDevices = []
+            for entry in deviceData:
+                newDev = Devices(
+                                deviceName = entry['name'],
+                                deviceId = entry["address"],
+                                deviceManufacturer = entry["manufacturer"],
+                                serviceUUID = entry["serviceUUID"],
+                                txPower = entry["txPower"],
+                                rssi = entry["rssi"]
+                                )
+                newDevices.append( newDev )
             
             newDev.save()
+            Devices.objects.bulk_create( newDevices )
 
             return JsonResponse({'status': 'success', 'data': deviceData})
 
