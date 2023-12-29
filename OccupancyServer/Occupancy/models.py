@@ -7,6 +7,7 @@ class Devices(models.Model):
     deviceId = models.CharField(max_length=100)
     
     # Maybe make some refactors later on about data types
+    deviceManufacturer = models.CharField(max_length=100)
     serviceUUID = models.CharField(max_length=100)
     txPower = models.CharField(max_length=100)
     rssi = models.CharField(max_length=100)
