@@ -25,14 +25,14 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 WiFiMulti wifiMulti;
 
-const char* targetServer = "bkp515.com:8000";
+const char* targetServer = "http://192.168.68.115";
 
 int sendToServer(String httpRequestData) {
   if(WiFi.status() == WL_CONNECTED){
     WiFiClient client;
     HTTPClient http;
 
-    http.begin(client, targetServer); // define path to server 
+    http.begin(targetServer); // define path to server 
     http.addHeader("Content-Type", "application/json"); // Define the type of file being sent
     return http.POST(httpRequestData);
   }
@@ -118,12 +118,11 @@ void loop() {
 
   // Open the json file and print to terminal to show that data has been properly logged.
   File file1 = SPIFFS.open("/spiffs/data.jsonl");
-  while (file1.available()) {
-    Serial.print((char)file1.read());
-  }
-  file.close();
+  Serial.println("");
+  Serial.println(sendToServer(file1.readString()));
+  file1.close();
 
-
+  
   
   SPIFFS.remove("/spiffs/data.jsonl"); // Delete the data from the last scan
   delay(2000);
