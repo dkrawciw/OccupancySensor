@@ -13,9 +13,9 @@ def logDevices(request):
     if request.method == 'POST':
         try:
             # Successfully recieving information from the 
-            deviceData = json.loads(request.body)
+            deviceData = [json.loads(jline) for jline in request.body.splitlines()]
 
-            # Formatting the given JSON and putting it into the database
+            # Formatting the given JSONL and putting it into the database
             newDevices = []
             for entry in deviceData:
                 newDev = Devices(
@@ -28,10 +28,10 @@ def logDevices(request):
                                 )
                 newDevices.append( newDev )
             
-            newDev.save()
+            # newDev.save()
             Devices.objects.bulk_create( newDevices )
 
-            return JsonResponse({'status': 'success', 'data': deviceData})
+            return JsonResponse({'status': 'success'})
 
         except json.JSONDecodeError as err:
             # If the JSON is invalid

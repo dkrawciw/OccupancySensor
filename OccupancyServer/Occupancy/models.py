@@ -3,6 +3,8 @@ from django.db import models
 # Create your models here.
 class Devices(models.Model):
     uniqueId = models.AutoField(primary_key=True)
+
+    # Information from the physical device
     deviceName = models.CharField(max_length=100)
     deviceId = models.CharField(max_length=100)
     
