@@ -125,7 +125,6 @@ void loop() {
   File file1 = SPIFFS.open("/spiffs/data.jsonl");
   Serial.println("");
   Serial.println(sendToServer(file1.readString()));
-
   file1.close();
 
   
