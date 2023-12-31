@@ -25,7 +25,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 WiFiMulti wifiMulti;
 
-const char* targetServer = "http://192.168.68.115:8080/occupy/";
+const char* targetServer = "http://192.168.68.115:8080/occupy/log_devices";
 
 int sendToServer(String httpRequestData) {
   if(WiFi.status() == WL_CONNECTED){
@@ -33,7 +33,7 @@ int sendToServer(String httpRequestData) {
     HTTPClient http;
 
     http.begin(targetServer); // define path to server 
-    http.addHeader("Content-Type", "application/json"); // Define the type of file being sent
+    http.addHeader("Content-Type", "application/jsonl"); // Define the type of file being sent
     return http.POST(httpRequestData);
   }
 }
@@ -109,7 +109,7 @@ void loop() {
     StaticJsonDocument<256> doc; // Create a small JSON file to add all the new device data 
     doc["name"] = device.getName().c_str(); // Collect all the data about the device and attach it to the definition in the json
     doc["address"] = device.getAddress().toString();
-    doc["manufacturer"] = device.getManufacturerData().data();
+    doc["manufacturer"] = BLEUtils::buildHexData(NULL, (uint8_t*)device.getManufacturerData().data(), device.getManufacturerData().length());
     doc["serviceUUID"] = device.getServiceDataUUID().toString();
     doc["txPower"] = device.getTXPower();
     doc["rssi"] = device.getRSSI();
@@ -124,8 +124,8 @@ void loop() {
   // Open the json file and print to terminal to show that data has been properly logged.
   File file1 = SPIFFS.open("/spiffs/data.jsonl");
   Serial.println("");
-  Serial.println(file1.readString());
   Serial.println(sendToServer(file1.readString()));
+
   file1.close();
 
   
