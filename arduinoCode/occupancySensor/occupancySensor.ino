@@ -25,7 +25,7 @@ class MyAdvertisedDeviceCallbacks: public BLEAdvertisedDeviceCallbacks {
 
 WiFiMulti wifiMulti;
 
-const char* targetServer = "http://192.168.68.115";
+const char* targetServer = "http://192.168.68.115:8080/occupy/";
 
 int sendToServer(String httpRequestData) {
   if(WiFi.status() == WL_CONNECTED){
@@ -48,6 +48,11 @@ void setup() {
 
   // Use smart config to get wifi credentials
   Serial.begin(115200);
+
+  // Clear terminal
+  Serial.println("");
+  Serial.println("");
+  Serial.println("");
 
   //Init WiFi as Station, start SmartConfig
   WiFi.mode(WIFI_AP_STA);
@@ -119,6 +124,7 @@ void loop() {
   // Open the json file and print to terminal to show that data has been properly logged.
   File file1 = SPIFFS.open("/spiffs/data.jsonl");
   Serial.println("");
+  Serial.println(file1.readString());
   Serial.println(sendToServer(file1.readString()));
   file1.close();
 
